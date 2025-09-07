@@ -1,0 +1,36 @@
+#root {
+  width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+textarea {
+  resize: none;
+  width: 100%;
+  border: 1px solid #09276f6e;
+  border-radius: 8px;
+}
+
+.container {
+  padding: 20px 0;
+  margin: 0 auto;
+}
+
+.container>div {
+  width: 100%;
+}
+
+h2 {
+  text-align: center;
+}
+
+.textContainer {
+  position: relative;
+  flex-grow: 1;
+}
+
+.flex-container {
+  display: flex;
+  column-gap: 30px;
+}
