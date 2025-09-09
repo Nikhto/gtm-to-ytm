@@ -170,6 +170,7 @@ function App() {
 	const printFileData = () => {
 		let tagsAndTriggers = getTagsAndTriggers(fileData);
 		setTags(tagsAndTriggers[0]);
+		console.log(tags);
 		setTriggers(tagsAndTriggers[1].flat());
 	};
 
@@ -222,7 +223,7 @@ function App() {
 						ref={tagsRef}
 						name="tags-text"
 						id="tags-text"
-						value={tags.map((i) => i.join("\t")).join("\n")}
+						value={tags.map((i) => i.map(j => `"${j.replaceAll('"', '""')}"`).join("\t")).join("\n")}
 						rows="50"
 						disabled
 					/>
