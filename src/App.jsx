@@ -180,7 +180,7 @@ function App() {
 	const googleAppsPost = () => {
 		axios
 			.post(
-				"https://script.google.com/macros/s/AKfycbw6VAvYEtPWjfcAjVZMOwYvIbdvrZDU81Os_OYtMkewjcLvQgjdCVry6deERqAFsZ4A/exec",
+				"https://script.google.com/macros/s/AKfycbzvTzDLn3jUMNPu_81d8gsLabdCTjP3pl88Y9X-QGhekfTK6UTSNPNw_ieXBWMcB47B/exec",
 				{ tags: tags, triggers: triggers, project: projectName || "без названия" },
 				{
 					headers: {
