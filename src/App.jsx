@@ -154,6 +154,7 @@ function App() {
 
 	const tagsRef = useRef();
 	const triggersRef = useRef();
+	const sheetURLRef = useRef();
 
 	const scanFile = (event) => {
 		const file = event.target.files[0];
@@ -170,7 +171,6 @@ function App() {
 	const printFileData = () => {
 		let tagsAndTriggers = getTagsAndTriggers(fileData);
 		setTags(tagsAndTriggers[0]);
-		console.log(tags);
 		setTriggers(tagsAndTriggers[1].flat());
 	};
 
@@ -178,10 +178,11 @@ function App() {
 		setProjectName(e.target.value);
 	};
 	const googleAppsPost = () => {
+		sheetURLRef.current.innerHTML = `<div class="loader"></div>`;
 		axios
 			.post(
-				"https://script.google.com/macros/s/AKfycbzvTzDLn3jUMNPu_81d8gsLabdCTjP3pl88Y9X-QGhekfTK6UTSNPNw_ieXBWMcB47B/exec",
-				{ tags: tags, triggers: triggers, project: projectName || "без названия" },
+				"https://script.google.com/macros/s/AKfycbzUAZCvcB1oV8COaywSTYEd2lTNYGJvTYELxi3oySXfyYm6k9rHzwThN6EBye03EKxK/exec",
+				JSON.stringify({ tags: tags, triggers: triggers, project: projectName || "без названия" }),
 				{
 					headers: {
 						"Content-Type": "text/plain;charset=utf-8",
@@ -189,8 +190,12 @@ function App() {
 				}
 			)
 			.then((response) => {
-				console.log(response.status);
-				console.log(response.body);
+				if (response.status == "200" && response.data.url) {
+					sheetURLRef.current.innerHTML = `<a href="${response.data.url}">${response.data.url}</a>`;
+				}
+			})
+			.catch((error) => {
+				console.log(error);
 			});
 	};
 	return (
@@ -216,6 +221,7 @@ function App() {
 				onClick={googleAppsPost}>
 				POST
 			</button>
+			<div ref={sheetURLRef}></div>
 			<div className="flex-container">
 				<div className="textContainer">
 					<h3>Теги</h3>
@@ -223,8 +229,8 @@ function App() {
 						ref={tagsRef}
 						name="tags-text"
 						id="tags-text"
-						value={tags.map((i) => i.map(j => `"${j.replaceAll('"', '""')}"`).join("\t")).join("\n")}
-						rows="50"
+						value={tags.map((i) => i.map((j) => `"${j.replaceAll('"', '""')}"`).join("\t")).join("\n")}
+						rows="40"
 						disabled
 					/>
 					<Buttons targetRef={tagsRef} />
@@ -236,7 +242,7 @@ function App() {
 						name="triggers-text"
 						id="triggers-text"
 						value={triggers.map((i) => i.join("\t")).join("\n")}
-						rows="50"
+						rows="40"
 						disabled
 					/>
 					<Buttons targetRef={triggersRef} />
