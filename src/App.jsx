@@ -12,8 +12,8 @@ function App() {
 	const [projectName, setProjectName] = useState();
 
 	// Функция получения триггеров
-	const formatFilterObjects = (arrayOfObjects) => {
-		if (!Array.isArray(arrayOfObjects)) {
+	const getTriggers = (triggers) => {
+		if (!Array.isArray(triggers)) {
 			throw new Error("Input must be an array of objects");
 		}
 
@@ -27,7 +27,7 @@ function App() {
 			};
 		};
 
-		return arrayOfObjects.map((obj) => {
+		return triggers.map((obj) => {
 			const lines = [];
 
 			// CUSTOM_EVENT с customEventFilter
@@ -87,9 +87,18 @@ function App() {
 			}
 
 			// TRIGGER GROUP
-			if (obj.type === "TRIGGER_GROUP"){
-				let refs = triggers.filter(trigger => obj.parameter.filter(p => p.key == "triggerIds")[0].list.map(ref => ref.value).includes(trigger.triggerId)).map(tr => tr.name);
-				refs.forEach(ref => lines.push([obj.name, obj.type, "Триггер","",ref]));
+			if (obj.type === "TRIGGER_GROUP") {
+				console.log(obj);
+				let refs = triggers
+					.filter((trigger) =>
+						obj.parameter
+							.filter((p) => p.key == "triggerIds")[0]
+							.list.map((ref) => ref.value)
+							.includes(trigger.triggerId)
+					)
+					.map((tr) => tr.name);
+				console.log(refs);
+				refs.forEach((ref) => lines.push([obj.name, obj.type, "Триггер", "", ref]));
 				if (Array.isArray(obj.filter)) {
 					const [first, ...rest] = obj.filter;
 					const firstParams = getParams(first);
@@ -121,57 +130,49 @@ function App() {
 				lines.push([obj.name, obj.type, "Все события"]);
 				return lines;
 			}
-
-			// Если не удалось определить структуру
-			lines.push([obj.name, obj.type, "[Unsupported format]"]);
-			return lines;
 		});
 	};
 
 	// Функция получения переменных
 	const variablesToTable = (variables) => {
-    // Создаем таблицу
-    const table = [];
-    
-    // Обрабатываем каждую переменную
-    variables.forEach(variable => {
-        let type = '';
-        let value = '';
-        
-        // Определяем тип переменной и извлекаем значение
-        switch(variable.type) {
-            case 'v': // Data Layer Variable
-                type = 'Переменная уровня данных';
-                value = variable.parameter.find(p => p.key === 'name')?.value || '';
-                break;
-                
-            case 'jsm': // JavaScript Variable
-                type = 'Код JS';
-                value = variable.parameter.find(p => p.key === 'javascript')?.value || '';
-                // Форматируем для лучшей читаемости
-                value = value.replace(/\\n/g, '\n').replace(/\\"/g, '"');
-                break;
-                
-            case 'c': // Constant Variable
-                type = 'Константа';
-                value = variable.parameter.find(p => p.key === 'value')?.value || '';
-                break;
-                
-            default:
-                type = variable.type;
-                value = JSON.stringify(variable.parameter);
-        }
-        
-        // Добавляем строку в таблицу
-        table.push([
-            variable.name,
-            type,
-            value
-        ]);
-    });
-    
-    return table;
-}
+		// Создаем таблицу
+		const table = [];
+
+		// Обрабатываем каждую переменную
+		variables.forEach((variable) => {
+			let type = "";
+			let value = "";
+
+			// Определяем тип переменной и извлекаем значение
+			switch (variable.type) {
+				case "v": // Data Layer Variable
+					type = "Переменная уровня данных";
+					value = variable.parameter.find((p) => p.key === "name")?.value || "";
+					break;
+
+				case "jsm": // JavaScript Variable
+					type = "Код JS";
+					value = variable.parameter.find((p) => p.key === "javascript")?.value || "";
+					// Форматируем для лучшей читаемости
+					value = value.replace(/\\n/g, "\n").replace(/\\"/g, '"');
+					break;
+
+				case "c": // Constant Variable
+					type = "Константа";
+					value = variable.parameter.find((p) => p.key === "value")?.value || "";
+					break;
+
+				default:
+					type = variable.type;
+					value = JSON.stringify(variable.parameter);
+			}
+
+			// Добавляем строку в таблицу
+			table.push([variable.name, type, value]);
+		});
+
+		return table;
+	};
 
 	// Функция для извлечения параметра по ключу
 	const getParamValue = (tag, key) => {
@@ -197,7 +198,7 @@ function App() {
 		// Название тега\tТип тега\tТриггеры\tHTML-код\tНа паузе
 
 		let tagsResult = [];
-		let triggersResult = formatFilterObjects(triggers);
+		let triggersResult = getTriggers(triggers);
 		let variablesResult = variablesToTable(variables);
 
 		// Формируем строки
@@ -241,7 +242,7 @@ function App() {
 		let containerData = getContainerData(fileData);
 		setTags(containerData[0]);
 		setTriggers(containerData[1].flat());
-		setVariables(containerData[2])
+		setVariables(containerData[2]);
 	};
 
 	const projectInputChange = (e) => {
@@ -252,7 +253,12 @@ function App() {
 		axios
 			.post(
 				"https://script.google.com/macros/s/AKfycbxWXaQ9TwYwSs5Ut_Uluwfkg4gezjyCRFs3PZU-zsVoRv0SPrSRYd9bv7i5NG4sDTKQ/exec",
-				JSON.stringify({ tags: tags, triggers: triggers, variables: variables, project: projectName || "без названия" }),
+				JSON.stringify({
+					tags: tags,
+					triggers: triggers,
+					variables: variables,
+					project: projectName || "без названия",
+				}),
 				{
 					headers: {
 						"Content-Type": "text/plain;charset=utf-8",
