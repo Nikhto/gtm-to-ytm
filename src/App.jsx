@@ -220,7 +220,7 @@ function App() {
 		let containerData = getContainerData(fileData);
 		setTags(containerData[0]);
 		setTriggers(containerData[1].flat());
-		setVariables(containerData[0])
+		setVariables(containerData[2])
 	};
 
 	const projectInputChange = (e) => {
@@ -230,7 +230,7 @@ function App() {
 		sheetURLRef.current.innerHTML = `<div class="loader"></div>`;
 		axios
 			.post(
-				"https://script.google.com/macros/s/AKfycbw7IUfR3Yzrqx_-Ta25ko2rOD2GrS3N_Jf7nCk5iEmj9AVeaCUacdP9K3Iw4FyZFOpH/exec",
+				"https://script.google.com/macros/s/AKfycbxWXaQ9TwYwSs5Ut_Uluwfkg4gezjyCRFs3PZU-zsVoRv0SPrSRYd9bv7i5NG4sDTKQ/exec",
 				JSON.stringify({ tags: tags, triggers: triggers, variables: variables, project: projectName || "без названия" }),
 				{
 					headers: {
