@@ -86,6 +86,24 @@ function App() {
 				return lines;
 			}
 
+			// TRIGGER GROUP
+			if (obj.type === "TRIGGER_GROUP"){
+				let refs = triggers.filter(trigger => obj.parameter.filter(p => p.key == "triggerIds")[0].list.map(ref => ref.value).includes(trigger.triggerId)).map(tr => tr.name);
+				refs.forEach(ref => lines.push([obj.name, obj.type, "Триггер","",ref]));
+				if (Array.isArray(obj.filter)) {
+					const [first, ...rest] = obj.filter;
+					const firstParams = getParams(first);
+
+					lines.push([obj.name, obj.type, firstParams.arg0, firstParams.type, firstParams.arg1]);
+
+					rest.forEach((filter) => {
+						const p = getParams(filter);
+						lines.push([obj.name, obj.type, p.arg0, p.type, p.arg1]);
+					});
+				}
+				return lines;
+			}
+
 			// Стандартный CLICK или другой тип с filter
 			if (Array.isArray(obj.filter)) {
 				const [first, ...rest] = obj.filter;
@@ -98,6 +116,9 @@ function App() {
 					lines.push([obj.name, obj.type, p.arg0, p.type, p.arg1]);
 				});
 
+				return lines;
+			} else {
+				lines.push([obj.name, obj.type, "Все события"]);
 				return lines;
 			}
 
