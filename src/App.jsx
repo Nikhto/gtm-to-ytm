@@ -8,6 +8,7 @@ function App() {
 	const [fileData, setFileData] = useState();
 	const [tags, setTags] = useState([]);
 	const [triggers, setTriggers] = useState([]);
+	const [variables, setVariables] = useState([]);
 	const [projectName, setProjectName] = useState();
 
 	// Функция получения триггеров
@@ -106,15 +107,61 @@ function App() {
 		});
 	};
 
+	// Функция получения переменных
+	const variablesToTable = (variables) => {
+    // Создаем таблицу
+    const table = [];
+    
+    // Обрабатываем каждую переменную
+    variables.forEach(variable => {
+        let type = '';
+        let value = '';
+        
+        // Определяем тип переменной и извлекаем значение
+        switch(variable.type) {
+            case 'v': // Data Layer Variable
+                type = 'Переменная уровня данных';
+                value = variable.parameter.find(p => p.key === 'name')?.value || '';
+                break;
+                
+            case 'jsm': // JavaScript Variable
+                type = 'Код JS';
+                value = variable.parameter.find(p => p.key === 'javascript')?.value || '';
+                // Форматируем для лучшей читаемости
+                value = value.replace(/\\n/g, '\n').replace(/\\"/g, '"');
+                break;
+                
+            case 'c': // Constant Variable
+                type = 'Константа';
+                value = variable.parameter.find(p => p.key === 'value')?.value || '';
+                break;
+                
+            default:
+                type = variable.type;
+                value = JSON.stringify(variable.parameter);
+        }
+        
+        // Добавляем строку в таблицу
+        table.push([
+            variable.name,
+            type,
+            value
+        ]);
+    });
+    
+    return table;
+}
+
 	// Функция для извлечения параметра по ключу
 	const getParamValue = (tag, key) => {
 		const param = tag.parameter?.find((p) => p.key === key);
 		return param ? param.value : "";
 	};
-	const getTagsAndTriggers = (GTMObj) => {
+	const getContainerData = (GTMObj) => {
 		// Получаем массив тегов и триггеров
 		const tags = GTMObj.containerVersion.tag;
 		const triggers = GTMObj.containerVersion.trigger;
+		const variables = GTMObj.containerVersion.variable;
 
 		// Создаём словарь для быстрого поиска названий триггеров по ID
 		const triggerMap = {};
@@ -130,6 +177,7 @@ function App() {
 
 		let tagsResult = [];
 		let triggersResult = formatFilterObjects(triggers);
+		let variablesResult = variablesToTable(variables);
 
 		// Формируем строки
 		tags.forEach((tag) => {
@@ -149,7 +197,7 @@ function App() {
 			tagsResult.push(row);
 		});
 
-		return [tagsResult, triggersResult];
+		return [tagsResult, triggersResult, variablesResult];
 	};
 
 	const tagsRef = useRef();
@@ -169,9 +217,10 @@ function App() {
 	};
 
 	const printFileData = () => {
-		let tagsAndTriggers = getTagsAndTriggers(fileData);
-		setTags(tagsAndTriggers[0]);
-		setTriggers(tagsAndTriggers[1].flat());
+		let containerData = getContainerData(fileData);
+		setTags(containerData[0]);
+		setTriggers(containerData[1].flat());
+		setVariables(containerData[0])
 	};
 
 	const projectInputChange = (e) => {
@@ -181,8 +230,8 @@ function App() {
 		sheetURLRef.current.innerHTML = `<div class="loader"></div>`;
 		axios
 			.post(
-				"https://script.google.com/macros/s/AKfycbzUAZCvcB1oV8COaywSTYEd2lTNYGJvTYELxi3oySXfyYm6k9rHzwThN6EBye03EKxK/exec",
-				JSON.stringify({ tags: tags, triggers: triggers, project: projectName || "без названия" }),
+				"https://script.google.com/macros/s/AKfycbw7IUfR3Yzrqx_-Ta25ko2rOD2GrS3N_Jf7nCk5iEmj9AVeaCUacdP9K3Iw4FyZFOpH/exec",
+				JSON.stringify({ tags: tags, triggers: triggers, variables: variables, project: projectName || "без названия" }),
 				{
 					headers: {
 						"Content-Type": "text/plain;charset=utf-8",
