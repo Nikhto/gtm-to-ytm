@@ -35,6 +35,10 @@ h2 {
   column-gap: 30px;
 }
 
+.flex-center {
+  justify-items: center;
+}
+
 /* HTML: <div class="loader"></div> */
 .loader {
   margin: 0 auto;
