@@ -279,7 +279,7 @@ function App() {
 	return (
 		<>
 			<div className="container">
-				<div className="flex-container">
+				<div className="flex-container flex-center">
 					<input
 						type="file"
 						onChange={scanFile}
@@ -292,7 +292,7 @@ function App() {
 				</div>
 			</div>
 			<div className="container">
-				<div className="flex-container">
+				<div className="flex-container flex-center">
 			<input
 				type="text"
 				placeholder="Проект"

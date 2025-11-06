@@ -36,7 +36,8 @@ h2 {
 }
 
 .flex-center {
-  justify-items: center;
+  justify-content: center;
+  align-items: center;
 }
 
 /* HTML: <div class="loader"></div> */
