@@ -6,6 +6,7 @@ import "./App.css";
 
 function App() {
 	const [fileData, setFileData] = useState();
+	const [isDataParsed, setIsDataParsed] = useState(false);
 	const [tags, setTags] = useState([]);
 	const [triggers, setTriggers] = useState([]);
 	const [variables, setVariables] = useState([]);
@@ -240,6 +241,7 @@ function App() {
 
 	const printFileData = () => {
 		let containerData = getContainerData(fileData);
+		setIsDataParsed(true);
 		setTags(containerData[0]);
 		setTriggers(containerData[1].flat());
 		setVariables(containerData[2]);
@@ -277,16 +279,20 @@ function App() {
 	return (
 		<>
 			<div className="container">
-				<input
-					type="file"
-					onChange={scanFile}
-				/>
-				<button
-					id="printBtn"
-					onClick={printFileData}>
-					Вывести теги и триггеры
-				</button>
+				<div className="flex-container">
+					<input
+						type="file"
+						onChange={scanFile}
+					/>
+					<button
+						id="printBtn"
+						onClick={printFileData}>
+						Вывести теги и триггеры
+					</button>
+				</div>
 			</div>
+			<div className="container">
+				<div className="flex-container">
 			<input
 				type="text"
 				placeholder="Проект"
@@ -294,9 +300,14 @@ function App() {
 			/>
 			<button
 				id="g-apps-post-btn"
-				onClick={googleAppsPost}>
-				POST
+				onClick={googleAppsPost}
+				disabled={!isDataParsed}
+				>
+				Сгенерировать таблицу
 			</button>
+			
+				</div>
+			</div>
 			<div ref={sheetURLRef}></div>
 			<div className="flex-container">
 				<div className="textContainer">
