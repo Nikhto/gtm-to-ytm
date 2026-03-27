@@ -182,9 +182,9 @@ function App() {
 	};
 	const getContainerData = (GTMObj) => {
 		// Получаем массив тегов и триггеров
-		const tags = GTMObj.containerVersion.tag;
-		const triggers = GTMObj.containerVersion.trigger;
-		const variables = GTMObj.containerVersion.variable;
+		const tags = GTMObj.containerVersion.tag || [];
+		const triggers = GTMObj.containerVersion.trigger || [];
+		const variables = GTMObj.containerVersion.variable || [];
 
 		// Создаём словарь для быстрого поиска названий триггеров по ID
 		const triggerMap = {};
