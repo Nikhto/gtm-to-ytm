@@ -79,7 +79,7 @@ function App() {
 				}
 				const ev_params = obj.parameter.filter((f) => f.key != "selectorType" && !f.key.match(/^element/) && f.value != "false");
 				ev_params.forEach((p) => {
-					lines.push([obj.name, obj.type, p_names[p.key], p.value])
+					lines.push([obj.name, obj.type, "PARAMETER", p_names[p.key], p.value])
 				})
 
 				// Если есть filter
