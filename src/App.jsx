@@ -275,7 +275,7 @@ function App() {
 			)
 			.then((response) => {
 				if (response.status == "200" && response.data.url) {
-					sheetURLRef.current.innerHTML = `<a href="${response.data.url}">${response.data.url}</a>`;
+					sheetURLRef.current.innerHTML = `<a href="${response.data.url}" target="_blank" rel="nofollow noopener">${response.data.url}</a>`;
 				}
 			})
 			.catch((error) => {
