@@ -65,16 +65,22 @@ function App() {
 			// ELEMENT_VISIBILITY
 			if (obj.type === "ELEMENT_VISIBILITY") {
 				const selectorType = obj.parameter.filter((f) => f.type == "TEMPLATE" && f.key == "selectorType")[0].value;
-				const selectorValue =
-					(selectorType == "ID" ? "#" : "") +
-					obj.parameter.filter((f) => f.type == "TEMPLATE" && f.key.match(/^element/))[0].value;
-				const onScreenRatio = obj.parameter.filter((f) => f.type == "TEMPLATE" && f.key == "onScreenRatio")[0].value;
+				const selectorValue = obj.parameter.filter((f) => f.type == "TEMPLATE" && f.key.match(/^element/))[0].value;
 
 				// Заголовок и селектор — первая строка
-				lines.push([obj.name, obj.type, "EV Target", "CSS_SELECTOR", selectorValue || ""]);
+				lines.push([obj.name, obj.type, "ELEMENT", selectorType, selectorValue || ""]);
 
-				// Процент показа — вторая строка
-				lines.push([obj.name, obj.type, "onScreenRatio", "", onScreenRatio || ""]);
+				// Параметры
+				const p_names = {
+					"useOnScreenDuration": "Минимальное время видимости",
+					"onScreenRatio": "Минимальный процент видимости",
+					"useDomChangeListener": "Регистрация изменений DOM",
+					"firingFrequency": "Правила запуска этого триггера"
+				}
+				const ev_params = obj.parameter.filter((f) => f.key != "selectorType" && !f.key.match(/^element/) && f.value != "false");
+				ev_params.forEach((p) => {
+					lines.push([obj.name, obj.type, p_names[p.key], p.value])
+				}
 
 				// Если есть filter
 				if (Array.isArray(obj.filter)) {
