@@ -33,6 +33,14 @@ function App() {
 
 			// CUSTOM_EVENT с customEventFilter
 			if (obj.type === "CUSTOM_EVENT" && Array.isArray(obj.customEventFilter)) {
+
+				if (obj.event && obj.event != "") lines.push([
+					obj.name,
+					obj.type,
+					"EVENT",
+					"EQUALS",
+					obj.event,
+				]);
 				const [mainFilter, ...restFilters] = obj.customEventFilter;
 				const mainParams = Object.fromEntries(mainFilter.parameter.map((p) => [p.key, p.value]));
 
