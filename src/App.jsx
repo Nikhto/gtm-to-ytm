@@ -121,7 +121,7 @@ function App() {
 			}
 
 			// Стандартный CLICK или другой тип с filter
-			if (Array.isArray(obj.filter)) {
+			if (Array.isArray(obj.filter) && obj.filter.length > 0) {
 				const [first, ...rest] = obj.filter;
 				const firstParams = getParams(first);
 
