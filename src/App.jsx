@@ -98,8 +98,7 @@ function App() {
 				console.log(obj);
 				let refs = triggers
 					.filter((trigger) =>
-						obj.parameter?
-							.filter((p) => p.key == "triggerIds")[0]
+						obj.parameter?.filter((p) => p.key == "triggerIds")[0]
 							.list.map((ref) => ref.value)
 							.includes(trigger.triggerId)
 					)
